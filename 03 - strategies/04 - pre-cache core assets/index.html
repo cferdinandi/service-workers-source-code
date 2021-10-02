@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Pre-Cache Core Assets</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="shortcut icon" href="/img/favicon.ico">
+	</head>
+
+	<body>
+
+		<h1><img alt="" src="/img/logo.svg"> Pre-Cache Core Assets</h1>
+		<p>Since they're used so often.</p>
+
+
+		<script src="/js/main.js"></script>
+		<script>
+			if (navigator && navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js');
+			}
+		</script>
+	</body>
+</html>

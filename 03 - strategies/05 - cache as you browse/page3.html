@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Cache as you browser</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			img {
+				height: auto;
+				max-width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Page 3</h1>
+
+		<p><a href="index.html">Click Me</a></p>
+
+		<p><img alt="A chihuahua with white fur and tan ears sitting on a woman's lap while she reads on a tablet" src="img/jacque.jpg"></p>
+
+
+		<script>
+			if (navigator && navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js');
+			}
+		</script>
+	</body>
+</html>

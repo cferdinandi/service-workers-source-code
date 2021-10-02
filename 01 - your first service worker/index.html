@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Your first service worker</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width:  40em;
+				width:  88%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Your first service worker</h1>
+
+		<p>Looks like you're online!</p>
+
+
+		<script>
+			if (navigator && navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js');
+			}
+		</script>
+	</body>
+</html>

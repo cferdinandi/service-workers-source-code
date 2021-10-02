@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Fallback Content</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			img {
+				height: auto;
+				max-width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Fallback Content</h1>
+		<p>This is the homepage</p>
+
+		<p><a href="page99.html">Click Me</a></p>
+
+		<p><img alt="A white pitbull with a black patch over his eye and black ears" src="img/colt.jpg"></p>
+
+		<p><img alt="This image is missing, so a fallback image is used instead" src="img/kylie.jpg"></p>
+
+
+		<script>
+			if (navigator && navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js');
+			}
+		</script>
+	</body>
+</html>
