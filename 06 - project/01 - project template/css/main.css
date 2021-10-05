@@ -1,0 +1,49 @@
+/**
+ * Add box sizing to everything
+ * @link http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+ */
+*,
+*:before,
+*:after {
+	box-sizing: border-box;
+}
+
+body {
+	color:  #272727;
+	font-family: "PT Serif", serif;
+	margin: 0 auto;
+	max-width:  40em;
+	padding-top: 1em;
+	width:  88%;
+}
+
+.logo {
+	color: #272727;
+	text-decoration: none;
+}
+
+.hero {
+	background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(/img/hero.jpg);
+	background-position: center;
+	background-size: cover;
+	color: #ffffff;
+	min-height: 20em;
+	padding: 2em;
+	width: 100%;
+}
+
+.nav {
+	margin: 0 -0.5em;
+	padding: 0.25em 0;
+}
+
+.nav > li {
+	display: inline-block;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+}
+
+img {
+	height:  auto;
+	max-width: 100%;
+}

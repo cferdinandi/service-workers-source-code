@@ -1,6 +1,5 @@
 let coreAssets = [
-	'/offline.html',
-	'img/fallback.jpg'
+	'/offline.html'
 ];
 
 // On install, activate immediately
@@ -10,7 +9,7 @@ self.addEventListener('install', function (event) {
 	self.skipWaiting();
 
 	// Cache core assets
-	event.waitUntil(caches.open('app').then(function (cache) {
+	event.waitUntil(caches.open('core').then(function (cache) {
 		for (let asset of coreAssets) {
 			cache.add(new Request(asset));
 		}
@@ -37,7 +36,7 @@ self.addEventListener('fetch', function (event) {
 
 				// Create a copy of the response and save it to the cache
 				let copy = response.clone();
-				event.waitUntil(caches.open('app').then(function (cache) {
+				event.waitUntil(caches.open('pages').then(function (cache) {
 					return cache.put(request, copy);
 				}));
 
@@ -65,20 +64,13 @@ self.addEventListener('fetch', function (event) {
 					// If the request is for an image, save a copy of it in cache
 					if (request.headers.get('Accept').includes('image')) {
 						let copy = response.clone();
-						event.waitUntil(caches.open('app').then(function (cache) {
+						event.waitUntil(caches.open('img').then(function (cache) {
 							return cache.put(request, copy);
 						}));
 					}
 
 					// Return the response
 					return response;
-
-				}).catch(function () {
-
-					// If the request is for an image, respond with the fallback image
-					if (request.headers.get('Accept').includes('image')) {
-						return caches.match('/img/fallback.jpg');
-					}
 
 				});
 			})

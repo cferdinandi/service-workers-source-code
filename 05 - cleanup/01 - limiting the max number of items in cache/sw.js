@@ -1,21 +1,30 @@
-let coreAssets = [
-	'/offline.html',
-	'img/fallback.jpg'
-];
+// Max number of files in cache
+let limits = {
+	pages: 35,
+	imgs: 20
+};
+
+/**
+ * Remove cached items over a certain number
+ * @param  {String}  key The cache key
+ * @param  {Integer} max The max number of items allowed
+ */
+function trimCache (key, max) {
+	caches.open(key).then(function (cache) {
+		cache.keys().then(function (keys) {
+			if (keys.length <= max) return;
+			cache.delete(keys[0]).then(function () {
+				trimCache(key, max);
+			});
+		});
+	});
+}
 
 // On install, activate immediately
 self.addEventListener('install', function (event) {
 
 	// Activate immediately
 	self.skipWaiting();
-
-	// Cache core assets
-	event.waitUntil(caches.open('app').then(function (cache) {
-		for (let asset of coreAssets) {
-			cache.add(new Request(asset));
-		}
-		return cache;
-	}));
 
 });
 
@@ -37,7 +46,7 @@ self.addEventListener('fetch', function (event) {
 
 				// Create a copy of the response and save it to the cache
 				let copy = response.clone();
-				event.waitUntil(caches.open('app').then(function (cache) {
+				event.waitUntil(caches.open('pages').then(function (cache) {
 					return cache.put(request, copy);
 				}));
 
@@ -65,7 +74,7 @@ self.addEventListener('fetch', function (event) {
 					// If the request is for an image, save a copy of it in cache
 					if (request.headers.get('Accept').includes('image')) {
 						let copy = response.clone();
-						event.waitUntil(caches.open('app').then(function (cache) {
+						event.waitUntil(caches.open('img').then(function (cache) {
 							return cache.put(request, copy);
 						}));
 					}
@@ -73,15 +82,24 @@ self.addEventListener('fetch', function (event) {
 					// Return the response
 					return response;
 
-				}).catch(function () {
-
-					// If the request is for an image, respond with the fallback image
-					if (request.headers.get('Accept').includes('image')) {
-						return caches.match('/img/fallback.jpg');
-					}
-
 				});
 			})
 		);
 	}
+
+});
+
+// Trim caches over a certain size
+self.addEventListener('message', function (event) {
+
+	// Make sure the event was from a trusted site
+	// if (event.origin !== 'https://your-awesome-website.com') return;
+
+	// Only run on cleanUp messages
+	if (event.data !== 'cleanUp') return;
+
+	// Trim the cache
+	trimCache('pages', limits.pages);
+	trimCache('img', limits.imgs);
+
 });

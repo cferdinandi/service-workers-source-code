@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Caching API Responses - Network-First</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 40em;
+				width: 88%;
+			}
+
+			.skwak {
+				border-bottom: 1px solid #e5e5e5;
+				margin-bottom: 1em;
+				padding: 0 0 1em;
+			}
+
+			.skwak:last-child {
+				border-bottom: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>Caching API Responses - Network-First</h1>
+
+		<div id="app">Loading...</div>
+
+
+		<script>
+			// Get the #app element
+			let app = document.querySelector('#app');
+
+			// Fetch API data
+			fetch('https://vanillajsguides.com/api/skwak.json').then(function (response) {
+				if (response.ok) {
+					return response.json();
+				}
+				throw response;
+			}).then(function (data) {
+				app.innerHTML = data.skwaks.map(function (skwak) {
+					// In a real-world app, this should be sanitized first
+					return `
+						<div class="skwak">
+							${skwak.content}<br>
+							- ${skwak.date}
+						</div>`;
+				}).join('');
+			}).catch(function (error) {
+				console.warn(error);
+				app.textContent = 'Something went wrong.';
+			});
+
+			// Register the service worker
+			if (navigator && navigator.serviceWorker) {
+				navigator.serviceWorker.register('sw.js');
+			}
+		</script>
+	</body>
+</html>

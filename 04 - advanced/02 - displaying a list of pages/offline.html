@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Offline | Displaying a list of pages</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width:  40em;
+				width:  88%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<h1>You're Offline</h1>
+		<p>It looks like you’re not online right now. Don’t worry! You can still access some of the pages you looked at before going offline.</p>
+
+		<!-- Offline content will get added here... -->
+		<div id="offline-content"></div>
+
+
+		<script>
+			if (navigator && navigator.serviceWorker) {
+
+				// Register the service worker
+				navigator.serviceWorker.register('sw.js');
+
+				// Display a list of cached pages
+				caches.open('pages').then(function (cache) {
+					cache.keys().then(function (keys) {
+
+						// Get the HTML element
+						let offline = document.querySelector('#offline-content');
+
+						// Inject a list of URLs into the DOM
+						offline.innerHTML =
+							`<ul>
+								${keys.map(function(key) {
+
+									// If the item isn't an HTML file, skip to the next one
+									// This is only needed if you're keeping everything in one cache
+									if (!key.headers.get('Accept').includes('text/html') || key.url.includes('/offline')) return '';
+
+									// Otherwise, create a list item with a link to the page
+									return `<li><a href="${key.url}">${key.url}</a></li>`;
+
+								}).join('')}
+							</ul>`;
+
+					});
+
+				});
+			}
+		</script>
+	</body>
+</html>
