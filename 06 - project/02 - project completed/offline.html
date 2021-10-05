@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Circles</title>
+		<title>Offline | Circles</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" type="text/css" href="/css/main.css">
 		<link rel="stylesheet" type="text/css" href="/css/fonts.css">
@@ -34,13 +34,6 @@
 			// Register the service worker
 			if (navigator && navigator.serviceWorker) {
 				navigator.serviceWorker.register('sw.js');
-
-				// Cleanup old cache on page load
-				if (navigator.serviceWorker.controller) {
-					window.addEventListener('load', function () {
-						navigator.serviceWorker.controller.postMessage('cleanUp');
-					});
-				}
 			}
 		</script>
 	</body>

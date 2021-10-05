@@ -36,22 +36,6 @@ let fonts = [
 	'/fonts/pt-serif-v11-latin-regular.woff2'
 ];
 
-/**
- * Remove cached items over a certain number
- * @param  {String}  key The cache key
- * @param  {Integer} max The max number of items allowed
- */
-function trimCache (key, max) {
-	caches.open(key).then(function (cache) {
-		cache.keys().then(function (keys) {
-			if (keys.length <= max) return;
-			cache.delete(keys[0]).then(function () {
-				trimCache(key, max);
-			});
-		});
-	});
-}
-
 // On install, activate immediately
 self.addEventListener('install', function (event) {
 
@@ -66,27 +50,6 @@ self.addEventListener('install', function (event) {
 		return cache;
 	}));
 
-});
-
-// On version update, remove old cached files
-self.addEventListener('activate', function (event) {
-	event.waitUntil(caches.keys().then(function (keys) {
-
-		// Get the keys of the caches to remove
-		let keysToRemove = keys.filter(function (key) {
-			return !cacheIDs.includes(key);
-		});
-
-		// Delete each cache
-		let removed = keysToRemove.map(function (key) {
-			return caches.delete(key);
-		});
-
-		return Promise.all(removed);
-
-	}).then(function () {
-		return self.clients.claim();
-	}));
 });
 
 // Listen for request events
@@ -147,20 +110,5 @@ self.addEventListener('fetch', function (event) {
 			})
 		);
 	}
-
-});
-
-// Trim caches over a certain size
-self.addEventListener('message', function (event) {
-
-	// Make sure the event was from a trusted site
-	// if (event.origin !== 'https://your-awesome-website.com') return;
-
-	// Only run on cleanUp messages
-	if (event.data !== 'cleanUp') return;
-
-	// Trim the cache
-	trimCache('pages', limits.pages);
-	trimCache('img', limits.imgs);
 
 });
