@@ -10,7 +10,7 @@ self.addEventListener('install', function (event) {
 	self.skipWaiting();
 
 	// Cache core assets
-	event.waitUntil(caches.open('core').then(function (cache) {
+	event.waitUntil(caches.open('app').then(function (cache) {
 		for (let asset of coreAssets) {
 			cache.add(new Request(asset));
 		}
@@ -37,7 +37,7 @@ self.addEventListener('fetch', function (event) {
 
 				// Create a copy of the response and save it to the cache
 				let copy = response.clone();
-				event.waitUntil(caches.open('pages').then(function (cache) {
+				event.waitUntil(caches.open('app').then(function (cache) {
 					return cache.put(request, copy);
 				}));
 
@@ -53,6 +53,7 @@ self.addEventListener('fetch', function (event) {
 
 			})
 		);
+		return;
 	}
 
 	// Images & Fonts
@@ -62,10 +63,13 @@ self.addEventListener('fetch', function (event) {
 			caches.match(request).then(function (response) {
 				return response || fetch(request).then(function (response) {
 
+					// If the request failed, throw an error
+					if (!response.ok) throw 'failed request';
+
 					// If the request is for an image, save a copy of it in cache
 					if (request.headers.get('Accept').includes('image')) {
 						let copy = response.clone();
-						event.waitUntil(caches.open('img').then(function (cache) {
+						event.waitUntil(caches.open('app').then(function (cache) {
 							return cache.put(request, copy);
 						}));
 					}

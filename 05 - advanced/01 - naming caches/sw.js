@@ -1,5 +1,6 @@
 let coreAssets = [
-	'/offline.html'
+	'/offline.html',
+	'img/fallback.jpg'
 ];
 
 // On install, activate immediately
@@ -52,6 +53,7 @@ self.addEventListener('fetch', function (event) {
 
 			})
 		);
+		return;
 	}
 
 	// Images & Fonts
@@ -71,6 +73,13 @@ self.addEventListener('fetch', function (event) {
 
 					// Return the response
 					return response;
+
+				}).catch(function () {
+
+					// If the request is for an image, respond with the fallback image
+					if (request.headers.get('Accept').includes('image')) {
+						return caches.match('/img/fallback.jpg');
+					}
 
 				});
 			})

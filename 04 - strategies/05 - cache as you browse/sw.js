@@ -1,21 +1,8 @@
-let coreAssets = [
-	'/offline.html',
-	'img/fallback.jpg'
-];
-
 // On install, activate immediately
 self.addEventListener('install', function (event) {
 
 	// Activate immediately
 	self.skipWaiting();
-
-	// Cache core assets
-	event.waitUntil(caches.open('app').then(function (cache) {
-		for (let asset of coreAssets) {
-			cache.add(new Request(asset));
-		}
-		return cache;
-	}));
 
 });
 
@@ -45,14 +32,12 @@ self.addEventListener('fetch', function (event) {
 				return response;
 
 			}).catch(function (error) {
-
-				// If there's no item in cache, respond with a fallback
 				return caches.match(request).then(function (response) {
-					return response || caches.match('/offline.html');
+					return response;
 				});
-
 			})
 		);
+		return;
 	}
 
 	// Images & Fonts
@@ -72,13 +57,6 @@ self.addEventListener('fetch', function (event) {
 
 					// Return the response
 					return response;
-
-				}).catch(function () {
-
-					// If the request is for an image, respond with the fallback image
-					if (request.headers.get('Accept').includes('image')) {
-						return caches.match('/img/fallback.jpg');
-					}
 
 				});
 			})

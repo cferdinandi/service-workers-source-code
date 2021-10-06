@@ -5,10 +5,10 @@ self.addEventListener('install', function (event) {
 	self.skipWaiting();
 
 	// Cache the offline.html page
-	caches.open('app').then(function (cache) {
+	event.waitUntil(caches.open('app').then(function (cache) {
 		cache.add(new Request('offline.html'));
 		return cache;
-	});
+	}));
 
 });
 

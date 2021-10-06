@@ -20,6 +20,7 @@ self.addEventListener('fetch', function (event) {
 				});
 			})
 		);
+		return;
 	}
 
 	// Images & Fonts

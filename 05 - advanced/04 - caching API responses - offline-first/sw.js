@@ -1,16 +1,3 @@
-/**
- * Check if cached API data is still valid
- * @param  {Object}  response The response object
- * @param  {Number}  goodFor  How long the response is good for, in milliseconds
- * @return {Boolean}          If true, cached data is valid
- */
-function isValid (response, goodFor) {
-	if (!response) return false;
-	let fetched = response.headers.get('sw-fetched-on');
-	if (fetched && (parseFloat(fetched) + goodFor) > new Date().getTime()) return true;
-	return false;
-}
-
 // On install, activate immediately
 self.addEventListener('install', function (event) {
 
@@ -53,6 +40,7 @@ self.addEventListener('fetch', function (event) {
 
 			})
 		);
+		return;
 	}
 
 	// Images & Fonts
@@ -76,44 +64,26 @@ self.addEventListener('fetch', function (event) {
 				});
 			})
 		);
+		return;
 	}
 
 	// API Calls
 	// Network-first
-	if (request.url.includes('/skwaks.json')) {
+	if (request.url.includes('/skwak.json')) {
 		event.respondWith(
 			caches.match(request).then(function (response) {
-
-				// If there's a cached API and it's still valid, use it
-				let cachedAPI = response;
-				if (isValid(response)) {
-					return response;
-				}
-
-				// Otherwise, make a fresh API call
-				return fetch(request).then(function (response) {
+				return response || fetch(request).then(function (response) {
 
 					// Create a copy of the response and save it to the cache
 					let copy = response.clone();
 					event.waitUntil(caches.open('apis').then(function (cache) {
-						let headers = new Headers(copy.headers);
-						headers.append('sw-fetched-on', new Date().getTime());
-						return copy.blob().then(function (body) {
-							return cache.put(request, new Response(body, {
-								status: copy.status,
-								statusText: copy.statusText,
-								headers: headers
-							}));
-						});
+						return cache.put(request, copy);
 					}));
 
 					// Return the response
 					return response;
 
-				}).catch(function (error) {
-					return cachedAPI;
 				});
-
 			})
 		);
 	}
