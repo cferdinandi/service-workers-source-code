@@ -1,3 +1,7 @@
+//
+// Settings & Variables
+//
+
 // Version number
 let version = '1.0.0';
 
@@ -7,13 +11,7 @@ let pageID = `${version}_pages`;
 let imgID = `${version}_img`;
 let cacheIDs = [coreID, pageID, imgID];
 
-// Max number of files in cache
-let limits = {
-	pages: 35,
-	imgs: 20
-};
-
-// Core assets to cache
+// Core assets
 let coreAssets = [
 	'/css/main.css',
 	'/css/fonts.css',
@@ -36,6 +34,11 @@ let fonts = [
 	'/fonts/pt-serif-v11-latin-regular.woff2'
 ];
 
+
+//
+// Event Listeners
+//
+
 // On install, activate immediately
 self.addEventListener('install', function (event) {
 
@@ -50,6 +53,27 @@ self.addEventListener('install', function (event) {
 		return cache;
 	}));
 
+});
+
+// On version update, remove old cached files
+self.addEventListener('activate', function (event) {
+	event.waitUntil(caches.keys().then(function (keys) {
+
+		// Get the keys of the caches to remove
+		let keysToRemove = keys.filter(function (key) {
+			return !cacheIDs.includes(key);
+		});
+
+		// Delete each cache
+		let removed = keysToRemove.map(function (key) {
+			return caches.delete(key);
+		});
+
+		return Promise.all(removed);
+
+	}).then(function () {
+		return self.clients.claim();
+	}));
 });
 
 // Listen for request events
@@ -90,7 +114,7 @@ self.addEventListener('fetch', function (event) {
 
 	// Images & Fonts
 	// Offline-first
-	if (request.headers.get('Accept').includes('image') || request.url.includes('pt-serif')) {
+	if (request.headers.get('Accept').includes('image') || request.url.includes('pt-serif-v11')) {
 		event.respondWith(
 			caches.match(request).then(function (response) {
 				return response || fetch(request).then(function (response) {

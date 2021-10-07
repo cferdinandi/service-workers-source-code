@@ -3,7 +3,7 @@
 //
 
 // Version number
-let version = '1.2.3';
+let version = '1.0.0';
 
 // Cache IDs
 let coreID = `${version}_core`;
@@ -135,7 +135,7 @@ self.addEventListener('fetch', function (event) {
 
 	// Images & Fonts
 	// Offline-first
-	if (request.headers.get('Accept').includes('image') || request.url.includes('pt-serif')) {
+	if (request.headers.get('Accept').includes('image') || request.url.includes('your-web-font')) {
 		event.respondWith(
 			caches.match(request).then(function (response) {
 				return response || fetch(request).then(function (response) {
