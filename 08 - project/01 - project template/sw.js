@@ -133,6 +133,22 @@ self.addEventListener('fetch', function (event) {
 		);
 	}
 
+	// CSS & JavaScript
+	// Offline-first
+	if (request.headers.get('Accept').includes('text/css') || request.headers.get('Accept').includes('text/javascript')) {
+		event.respondWith(
+			caches.match(request).then(function (response) {
+				return response || fetch(request).then(function (response) {
+
+					// Return the response
+					return response;
+
+				});
+			})
+		);
+		return;
+	}
+
 	// Images & Fonts
 	// Offline-first
 	if (request.headers.get('Accept').includes('image') || request.url.includes('your-web-font')) {
